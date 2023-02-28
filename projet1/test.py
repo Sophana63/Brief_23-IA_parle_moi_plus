@@ -3,12 +3,12 @@ import azure.cognitiveservices.speech as speechsdk
 import pyttsx3
 
 # Configure OpenAI API
-openai.api_key = "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"
+openai.api_key = "votre_key"
 
 # Configure Azure Speech Services
 speech_config = speechsdk.SpeechConfig(
-    subscription="48d09128b4cf44aa8c70d9e528261235",
-    region="francecentral"
+    subscription="votre_key",
+    region="votre_region"
 )
 speech_config.speech_synthesis_voice_name = "vi-VN-HoaiMyNeural"
 
