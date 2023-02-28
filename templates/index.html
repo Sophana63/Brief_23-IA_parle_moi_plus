@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <title>Reconnaissance vocale avec OpenAI</title>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Reconnaissance vocale avec OpenAI</h1>
+      <form method="POST" action="{{ url_for('recognize') }}" id="my-form">
+        <p>
+          <input type="submit" value="Parlez maintenant" >
+        </p>
+      </form>
+      <div id="loader" style="display: none;"><img src="{{url_for('static', filename='images/trying-to-listen-listen.gif')}}" /></div>
+    </div>
+    <div class="content">
+
+      {% if text %}
+      <p>Vous avez dit : {{ text }}</p>
+      {% endif %}
+      {% if response %}
+      <p>La réponse d'OpenAI : {{ response }}</p>
+      {% endif %}      
+      
+      <div id="result"></div>      
+      
+    </div>
+    </body>
+    <script>
+    const myForm = document.getElementById("my-form");
+    const resultDiv = document.getElementById("result");
+    const loaderDiv = document.getElementById("loader");
+
+    myForm.addEventListener("submit", function(event) {
+      event.preventDefault(); // empêche la soumission du formulaire
+      loaderDiv.style.display = "block"; // affiche le visuel de chargement
+
+      fetch("/recognize", {
+        method: "POST",
+        body: new FormData(myForm) // envoie les données du formulaire
+      })
+        .then(response => response.json())
+        .then(data => {
+          datas = JSON.stringify(data);
+          
+          let text = document.createElement('p');
+          text.textContent = 'Vous avez dit : ' + data.text;
+          document.body.appendChild(text);
+
+          let response = document.createElement('p');
+          response.textContent = 'La réponse d\'OpenAI : ' + data.response;
+          document.body.appendChild(response);
+
+          let i = 0;
+          let responseText = data.response;
+
+          function addCharacter() {
+            if (i < responseText.length) {
+              response.textContent += responseText.charAt(i);
+              i++;
+              setTimeout(addCharacter, 30);
+            }
+          }
+
+          setTimeout(addCharacter, 100);
+        })
+        .catch(error => console.error(error))
+        .finally(() => {
+        loaderDiv.style.display = "none"; // masque le visuel de chargement
+      });
+    });
+    </script>
+</html>

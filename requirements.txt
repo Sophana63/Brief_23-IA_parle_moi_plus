@@ -1,0 +1,5 @@
+Flask
+SpeechRecognition
+PyAudio
+openai
+python-dotenv
